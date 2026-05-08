@@ -5,5 +5,39 @@
 </head>
 <body>
     <h1>Video Info App</h1>
+    <button id="selectFile">Select a Video File</button>
+    <h2 id="results"></h2>
 </body>
+<script>
+    const { dialog } = require("@electron/remote");
+    const { ipcRenderer } = require('electron');
+    //Button to get a video section
+    document.getElementById("selectFile").addEventListener("click", async ()=>{
+        const result = await dialog.showOpenDialog(
+            {
+                properties: ['openFile'],
+                filter: [
+                    {
+                        name:"Videos",
+                        extensions:['mkv', 'avi', 'mp4', 'mov', 'wmv']
+                    }
+                ]
+            }
+        );
+        if(!result.canceled && result.filePaths.length >0){
+            const filePath = result.filePaths[0];
+            ipcRenderer.send('video:submit', filePath);
+            console.log("Selected File: ", filePath);
+        }
+    });
+    //Receving Data
+    ipcRenderer.on("video:durationAnalyzed", (event, duration)=>{
+        document.getElementById("results").textContent =
+        `Video duration: ${duration} section`;
+    });
+    ipcRenderer.on("video:error", (event, error)=>{
+        document.getElementById("results").textContent =
+        `Error: ${error}`;
+    });
+</script>
 </html>
