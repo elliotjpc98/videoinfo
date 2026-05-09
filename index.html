@@ -11,6 +11,7 @@
 <script>
     const { dialog } = require("@electron/remote");
     const { ipcRenderer } = require('electron');
+    const name = "Elliot Pazmino"
     //Button to get a video section
     document.getElementById("selectFile").addEventListener("click", async ()=>{
         const result = await dialog.showOpenDialog(
@@ -33,7 +34,7 @@
     //Receving Data
     ipcRenderer.on("video:durationAnalyzed", (event, duration)=>{
         document.getElementById("results").textContent =
-        `Video duration: ${duration} section`;
+        `${name}'s Video was ${duration}`;
     });
     ipcRenderer.on("video:error", (event, error)=>{
         document.getElementById("results").textContent =
